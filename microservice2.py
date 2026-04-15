@@ -1,7 +1,6 @@
 #Microservice 2: Order Service
 
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
 import requests
 import uuid
 
@@ -9,44 +8,39 @@ app = FastAPI(title="Order Service")
 
 INVENTORY_SERVICE_URL = "http://inventory-service:8081"
 
-orders_db = {}
-
-class OrderRequest(BaseModel):
-    product_id: str
-    quantity: int
+# In-memory orders
+orders = {}
 
 @app.post("/orders")
-def create_order(order: OrderRequest):
-    inventory_url = f"{INVENTORY_SERVICE_URL}/inventory/{order.product_id}"
+def create_order(product_id: str, quantity: int):
 
-    response = requests.get(inventory_url)
+    # Check inventory
+    inventory_api = f"{INVENTORY_SERVICE_URL}/inventory/{product_id}"
+    response = requests.get(inventory_api)
+
     if response.status_code != 200:
-        raise HTTPException(status_code=400, detail="Product not available")
+        raise HTTPException(status_code=400, detail="Product unavailable")
 
-    available_qty = response.json()["available_quantity"]
-    if order.quantity > available_qty:
-        raise HTTPException(status_code=400, detail="Insufficient inventory")
+    if quantity > response.json()["available_quantity"]:
+        raise HTTPException(status_code=400, detail="Not enough stock")
 
-    # Update inventory
-    update_resp = requests.put(
-        inventory_url,
-        params={"quantity": order.quantity}
-    )
-    if update_resp.status_code != 200:
-        raise HTTPException(status_code=400, detail="Failed to update inventory")
+    # Reduce inventory
+    reduce_resp = requests.put(inventory_api, params={"quantity": quantity})
+    if reduce_resp.status_code != 200:
+        raise HTTPException(status_code=400, detail="Inventory update failed")
 
     order_id = str(uuid.uuid4())
-    orders_db[order_id] = order.dict()
-
-    return {
-        "order_id": order_id,
-        "status": "Order confirmed"
+    orders[order_id] = {
+        "product_id": product_id,
+        "quantity": quantity,
+        "status": "CONFIRMED"
     }
+
+    return {"order_id": order_id, "status": "Order confirmed"}
 
 @app.get("/orders/{order_id}")
 def get_order(order_id: str):
-    if order_id not in orders_db:
+    if order_id not in orders:
         raise HTTPException(status_code=404, detail="Order not found")
-
-    return orders_db[order_id]
+    return orders[order_id]
 ``
