@@ -1,0 +1,4 @@
+#requirements.txt for 2 microservice
+fastapi
+uvicorn
+requests
