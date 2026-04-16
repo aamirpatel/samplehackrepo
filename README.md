@@ -18,22 +18,26 @@ Scope & Solution Overview:-
 o	Build and maintain CI/CD pipelines using tools such as Jenkins, GitLab CI, Azure DevOps, or TeamCity.
 o	Automate build, test, package, and deployment stages for applications developed in Java Spring Boot and Python.
 o	Enable automated triggers using API/Webhook integrations.
+
 2.	Security & Code Quality Integration
    
 o	Integrate SonarQube for static code quality analysis.
 o	Implement security scanning using Veracode and Prisma as part of pipeline gates.
 o	Enforce policy based approvals to prevent vulnerable code from reaching production.
-4.	Containerized Application Delivery
+
+3.	Containerized Application Delivery
 
 o	Containerize applications using Docker.
 o	Deploy and manage workloads on Kubernetes / OpenShift, hosted on AWS.
 o	Enable scalable, resilient deployments with minimal downtime.
-5.	Infrastructure as Code (IaC)
+
+4.	Infrastructure as Code (IaC)
 
 o	Provision and manage infrastructure using Terraform, Ansible, Chef, or AWS CloudFormation.
 o	Ensure environment consistency across dev, test, and production.
 o	Support database deployments for MongoDB, MS SQL Server, and PostgreSQL.
-6.	Monitoring & Observability
+
+5.	Monitoring & Observability
 
 o	Implement centralized monitoring and logging using ELK Stack and AppDynamics.
 o	Enable real time visibility into application performance, infrastructure health, and pipeline outcomes.
