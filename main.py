@@ -1,5 +1,7 @@
 #Inventory Service
 
+#Inventory Service
+
 from fastapi import FastAPI, HTTPException
 
 app = FastAPI(title="Inventory Service")
@@ -31,4 +33,3 @@ def reduce_inventory(product_id: str, quantity: int):
 
     inventory[product_id] -= quantity
     return {"message": "Inventory updated"}
-``
